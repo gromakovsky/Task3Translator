@@ -19,8 +19,4 @@ public class Translator {
 		return translation;
 	}
 
-	public static void main(String[] args) throws Exception {
-		String tr = getTranslation("hello");
-		System.out.println(tr);
-	}
 }
