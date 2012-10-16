@@ -12,21 +12,26 @@ public class FindPicturesURL {
 	static URLConnection connection;
 	static BufferedReader bufR;
 	static int count = 0;
-	
+			
 	public static String nextURL(String word) throws Exception {
+		adress = ajax + word + "&start=";
 		if (count % 8 == 0) {
-			count+=8;
-			return null;
-		}
-		adress = ajax + word + "&start=" + count;
-		PU = new URL(adress + count);
-		connection = PU.openConnection();
-		connection.setConnectTimeout(20000);
-		connection.connect();
-		bufR = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-		String nextLine = bufR.readLine();
-		while ((nextLine = bufR.readLine()) != null) {
-			PC.append(nextLine);
+			PC = new StringBuilder();
+			try {
+			PU = new URL(adress + count);
+			connection = PU.openConnection();
+			connection.setConnectTimeout(5000);
+			connection.connect();
+			bufR = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+			}
+			 catch (Exception e) {
+					count += 8;
+					return null;
+			 }
+			String nextLine;
+			while ((nextLine = bufR.readLine()) != null) {
+				PC.append(nextLine);
+			}
 		}
 		int index = PC.indexOf(parse);
 		count++;
@@ -34,10 +39,10 @@ public class FindPicturesURL {
 			PC = PC.delete(0, index + parse.length());
 			String Time = PC.substring(0, PC.indexOf("\""));
 			return Time;
-		}  
-		else {
+		} else {
 			return null;
 		}
-		
-		}
+
 	}
+
+}

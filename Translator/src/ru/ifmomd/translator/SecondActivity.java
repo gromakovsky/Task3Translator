@@ -32,6 +32,8 @@ public class SecondActivity extends Activity implements View.OnClickListener {
 	ImageView image = null;
 	TextView imgNumberText = null;
 	String inRus = "";
+	String wordToTranslate = "";
+	final static String errorPictureLink = "http://files.myopera.com/ZERO555/albums/815971/thumbs/4ba64glossy-error-icon.jpg_thumb.jpg";
 
 	public static Bitmap bitmapFromUrl(String url) throws IOException {
 		Bitmap x;
@@ -46,18 +48,20 @@ public class SecondActivity extends Activity implements View.OnClickListener {
 	}
 
 	private void createBitmaps() {
+		String nextUrl = "";
 		for (int imgNumber = 0; imgNumber < NUMBER_OF_PICS; imgNumber++) {
 			try {
-				String nextUrl;
-				try {
-					nextUrl = FindPicturesURL.nextURL("cat");
-					Log.i("A", nextUrl);
-				} catch (Exception ex) {
-					nextUrl = "http://files.myopera.com/ZERO555/albums/815971/thumbs/4ba64glossy-error-icon.jpg_thumb.jpg";
-					Log.i("B", nextUrl);
+				nextUrl = FindPicturesURL.nextURL(wordToTranslate);
+			} catch (Exception ex) {
+				nextUrl = errorPictureLink;
+			}
+			try {
+				if (nextUrl == null) {
+					nextUrl = errorPictureLink;
 				}
 				picsToDraw[imgNumber] = bitmapFromUrl(nextUrl);
 			} catch (IOException ex) {
+				imgNumber--;
 			}
 		}
 	}
@@ -66,14 +70,14 @@ public class SecondActivity extends Activity implements View.OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
-		String wordToTranslate = intent.getStringExtra(Main.EXTRA_MESSAGE);
+		wordToTranslate = intent.getStringExtra(Main.EXTRA_MESSAGE);
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 		try {
 			inRus = ru.ifmomd.translator.Translator
 					.getTranslation(wordToTranslate);
-		} catch (IOException ignore) {
+		} catch (IOException error) {
 			inRus = "Произошла ошибка. Сожалеем об этом.";
 		}
 
