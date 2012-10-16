@@ -1,3 +1,5 @@
+package ru.ifmomd.translator;
+
 import java.io.*;
 import java.net.*;
 
